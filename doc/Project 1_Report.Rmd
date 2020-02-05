@@ -4,7 +4,7 @@ output: html_document
 author: Marsya Chairuna (mc4813)
 ---
 
-![image](figs/PopvsRock.png)
+![](/Users/marsyachairuna/Documents/2019 Spring Applied Analytics/Applied Data Science/Spring2020-Project1-marsyachairuna/figs/PopvsRock.png)
 
 Rock and Pop fans have stirred up debates across internet forums and websites. Based on several internet forums and articles, such as in [Quora](https://www.quora.com/Why-do-some-people-hate-pop-music) and [Guardian](https://www.theguardian.com/music/2013/oct/11/david-byrne-internet-content-world)), Rock fans perceive pop music as overly simplistic, unmeaningful in both chords and lyrics. However, some articles from modern music journalist, such as [this article](https://spinditty.com/genres/rock-music-comeback), said that rock has become too serious to be relevant. 
 
