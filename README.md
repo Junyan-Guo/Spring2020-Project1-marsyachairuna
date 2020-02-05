@@ -2,7 +2,7 @@
 ## Spring 2020
 ## Project 1: Text Analytics on Song Lyrics (Rock vs. Pop)
 
-![](/Users/marsyachairuna/Documents/2019 Spring Applied Analytics/Applied Data Science/Spring2020-Project1-marsyachairuna/figs/PopvsRock.png)
+![image](figs/PopvsRock.png)
 
 ### [Project Description](doc/)
 Term: Spring 2020
