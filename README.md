@@ -1,20 +1,26 @@
-# Applied Data Science @ Columbia
-## Fall 2019
-## Project 1: A "data story" on the songs of our times
+# Applied Data Science at Columbia University
+## Spring 2020
+## Project 1: Text Analytics on Song Lyrics (Rock vs. Pop)
 
-<img src="figs/title1.jpeg" width="500">
+![](/Users/marsyachairuna/Documents/2019 Spring Applied Analytics/Applied Data Science/Spring2020-Project1-marsyachairuna/figs/PopvsRock.png)
 
 ### [Project Description](doc/)
-This is the first and only *individual* (as opposed to *team*) this semester. 
+Term: Spring 2020
 
-Term: Fall 2019
++ Project title: **Rock vs. Pop Music: How are they the same? How do they differ?**
++ This project is conducted by Marsya Chairuna (mc4813)
++ Project summary: Rock and Pop fans have stirred up debates across internet forums and websites. Setting aside the chords, how do they actually differ in terms of lyrics and sentiments?
 
-+ Projec title: Lorem ipsum dolor sit amet
-+ This project is conducted by [your name]
+1. *Words and Sentences:* What are the most frequent word(s) used in lyrics for each rock and pop genre? How the length of characters differs?
+2. *Sentiment:* Do we have a different type of sentiment/emotion between rock and pop?
+3. *Predictability:* Can we predict the whether a song's genre is rock or pop? 
 
-+ Project summary: [a short summary] Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+To answer the questions, this project used several techniques of text mining and sentiment analysis of song lyrics of both rock and pop genre. 
 
-Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
+The results show that: (1) both genres have similar word-by-word choices and similar average number of words per song. However, rock songs have more songs with significantly large number of words; (2) the lyrics of rock songs tend to be more of negative sentiments, as opposed to those of pop songs are slightly more likely to be positive than negative; (3) the prediction model is yet to be improved in accuracy by adding more data points for pop songs and refining/adding predictors. 
+
+
+Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is organized as follows.
 
 ```
 proj/

@@ -1,0 +1,274 @@
+---
+title: "Rock vs. Pop Music: How are they the same? How do they differ?"
+output: html_document
+author: Marsya Chairuna (mc4813)
+---
+
+![](/Users/marsyachairuna/Documents/2019 Spring Applied Analytics/Applied Data Science/Spring2020-Project1-marsyachairuna/figs/PopvsRock.png)
+
+Rock and Pop fans have stirred up debates across internet forums and websites. Based on several internet forums and articles, such as in [Quora](https://www.quora.com/Why-do-some-people-hate-pop-music) and [Guardian](https://www.theguardian.com/music/2013/oct/11/david-byrne-internet-content-world)), Rock fans perceive pop music as overly simplistic, unmeaningful in both chords and lyrics. However, some articles from modern music journalist, such as [this article](https://spinditty.com/genres/rock-music-comeback), said that rock has become too serious to be relevant. 
+
+> Setting aside the chords, how do they actually differ in terms of lyrics and sentiments? Are they really distinguishable?
+
+In summary, the questions we are interested in answering are:
+
+- *Words and Sentences:* What are the most frequent word(s) used in lyrics for each rock and pop genre? How the length of characters differs?
+
+- *Sentiment:* Do we have a different type of sentiment/emotion between rock and pop?
+
+- *Predictability:* Can we predict the whether a song's genre is rock or pop? 
+
+```{r echo=FALSE, results='hide',message=FALSE}
+# Loading libraries
+library(ggplot2)
+library(tm)
+library(data.table)
+library(tidytext)
+library(tidyverse)
+library(tidyr)
+library(DT)
+library(wordcloud)
+library(RColorBrewer)
+library(dplyr)
+```
+
+```{r echo=FALSE, results='hide',message=FALSE}
+# Loading data
+load("/Users/marsyachairuna/Documents/2019 Spring Applied Analytics/Applied Data Science/Spring2020-Project1-marsyachairuna/data/processed_lyrics.RData")
+data <- dt_lyrics
+
+# Preparing data
+data_all <- tibble(id = data$id, genre = data$genre, song_title = data$song, words = data$stemmedwords)
+
+# Creating tidy text format for the keywords
+data_tidy <- data_all %>% group_by(genre) %>% unnest_tokens(word,words) %>% select(genre, word) %>%
+  add_count(word, sort = TRUE) %>% distinct()
+
+# Creating tidy text dataframe with relative frequency value
+
+# Pop
+data_pop <- data_tidy %>% filter(genre == "Pop") %>% mutate(relfreq = round(n /sum(n), digits = 3)) %>% arrange(genre,desc(n),relfreq, .by_group = TRUE)
+
+# Rock
+data_rock <- data_tidy %>% filter(genre == "Rock") %>% mutate(relfreq = round(n / sum(n), digits = 3)) %>% arrange(genre,desc(n),relfreq, .by_group = TRUE)
+```
+
+## Topic 1: Words and Sentences
+### What are the most frequent words used in lyrics for each rock and pop genre?
+
+For the first topic, we want to know what are the most frequent words in lyrics of rock and pop music. First, we want to inspect the word cloud for each rock and pop genre using *wordcloud* package. The more a specific word appears in a source of textual data, that is song lyrics, the bigger and bolder it appears in the word cloud.
+
+At glance, we can observe that both genres have the word *"love"*, *"time"*, and *"youre"* as ones of their most common words in lyrics.
+
+#### Word Cloud
+```{r echo=FALSE, message=FALSE}
+set.seed(100) # Setting seed for reproducibility 
+
+# Word Cloud for Rock Genre
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Rock")
+wordcloud(words = data_rock$word, freq = data_rock$n, min.freq = 1, max.words = 150, random.order = FALSE, rot.per = 0.35, scale = c(3.5,0.5), random.color = FALSE, colors=brewer.pal(8,"Dark2"), main = "Title") 
+
+# Word Cloud for Pop Genre
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Pop")
+wordcloud(words = data_rock$word, freq = data_rock$n, min.freq = 1, max.words = 150, random.order = FALSE, rot.per = 0.35, scale = c(3.5,0.5), random.color = FALSE, colors=brewer.pal(8,"Dark2"), main = "Title") 
+```
+
+We will take a closer look of each genre's most frequent words by calculating the proportional or relative frequency of each word in a genre. The plot below illustrates the top 10 words that have the highest relative frequency in all song titles for each genre. 
+
+Rock and pop genres have several common words in their top 10 words, such as "love", "time", "day", "night", "life", "baby", and "heart". Therefore, both genres have similar word-by-word choices in their lyrics.
+
+```{r echo=FALSE, message=FALSE}
+par(mfrow=c(2,1))
+
+# Creating Table and Plotting for Rock Genre
+data_rock_top10 <- data_rock %>% arrange(genre,desc(relfreq), .by_group = TRUE) %>% top_n(10,relfreq)
+
+ggplot(data = data_rock_top10, aes(x = reorder(word,relfreq), y = relfreq)) +
+geom_bar(stat = "identity") + ggtitle("Top 10 Words for Rock Genre") + coord_flip() + ylab("Relative Frequency") + xlab("Word")
+
+# Creating Table and Plotting for Pop Genre
+data_pop_top10 <- data_pop %>% arrange(genre,desc(relfreq), .by_group = TRUE) %>% top_n(10,relfreq)
+ggplot(data = data_pop_top10, aes(x = reorder(word,relfreq), y = relfreq)) +
+geom_bar(stat = "identity") + ggtitle("Top 10 Words for Pop Genre") + coord_flip() + ylab("Relative Frequency") + xlab("Word")
+```
+
+### How the length of sentences (in words) differs between Rock and Pop genre? 
+
+We will now observe which music genre uses more lyrics in terms of average number of words per song.
+
+``` {r echo=FALSE, results='hide',message=FALSE}
+# Creating a table with column "total characters count" for each Rock and Pop Genre
+library(tidyverse)
+
+data_boxplot <- data_all %>% filter(genre == "Rock" | genre == "Pop") 
+  
+data_boxplot$n_words = apply(data_boxplot, 1, function(x) (1 + length(strsplit(x['words'], " ")[[1]])))
+
+# Remove Outlier
+data_boxplot <- data_boxplot %>% filter(n_words < 700)
+```
+
+``` {r echo=FALSE, message=FALSE}
+# Creating Boxplot of Average No. of Words per Song by Genre
+boxplot <- ggplot(data_boxplot, aes(genre, y=n_words)) + 
+  geom_violin() + xlab("Genre") + ylab("Average No. of Words per Song") + ggtitle("Average No. of Words per Song by Genre") + geom_boxplot(width=0.1)
+boxplot
+```
+
+Both genres have similar values in terms of median, quartiles, and ranges of average number of words per songs, which indicate their distributions of average number of words per song are similar. However, rock songs have more extreme values compared to pop songs, as demonstrated by the dots in 3,000-4,000 average no. of words region. 
+
+## Topic 2: Sentiments
+### Do we have a different type of sentiment between rock and pop? 
+
+#### NCR Sentiment
+
+Next, we will conduct sentimental analysis on song lyrics. By 10 different sentiments of NRC lexicon, we can obtain a proportion of each sentiment per genre. The distributions of sentiments between the two groups have a distinctive pattern.
+
+The lyrics of rock songs tend to be more of negative sentiments such as *"fear"*, *"anger"*, and *"sadness"*, as demonstrated by the large gap of proportion of those sentiments between rock and pop. In contrast, those of pop songs are slightly more likely to be positive than negative: 2 out of 3 sentiments with top proportion are positive sentiments, which are *"joy"* and *"trust"*.
+
+``` {r echo=FALSE, results='hide',message=FALSE}
+# Loading the library
+library(tidytext)
+library(textdata)
+
+# Joining sentiments with word in tidy data frame
+sentiment_tidy <- data_tidy %>% 
+  inner_join(get_sentiments("nrc")) %>%
+  filter(genre %in% c("Rock", "Pop")) %>%
+  filter(!sentiment %in% c("positive","negative"))
+
+# Creating table
+data_nrc <- data_all %>% group_by(genre) %>% unnest_tokens(word,words) %>% select(word) %>% filter(genre %in% c("Rock","Pop"))
+```
+
+``` {r echo=FALSE, ,message=FALSE}
+# Creating Table
+data_nrc2 <- data_nrc %>%
+        right_join(get_sentiments("nrc")) %>%
+        filter(!is.na(sentiment)) %>%
+        filter(!sentiment %in% c("positive","negative")) %>%
+        count(sentiment, sort = TRUE) %>% 
+        mutate(relfreq_sentiment = round(n/sum(n),3)) %>%
+        na.omit()
+
+# Creating Plot
+data_nrc2_plot <- ggplot(data_nrc2, aes(relfreq_sentiment, fct_reorder2(sentiment,genre=="Rock", relfreq_sentiment,  .desc = FALSE), color = genre)) +
+  geom_point() +
+  ggtitle("Relative Frequency of Sentiment (NRC) by Genre") + xlab("Sentiment") + ylab("Relative Frequency")
+
+data_nrc2_plot
+```
+
+## Topic 3: Predictability
+### Can we predict the whether a song's genre is rock or pop?
+
+Next, we want to see if a song's genre can be predicted using predictors that we have used in previous analysis, which are number of characters and prominent sentiment. Because the prediction outcome is between "rock" and "pop" genre, we will use logistic regression using caTools library. We will first load the library and create an appropriate data frame as an input for logistic regression.
+
+- We will use a dummy variable to represent "Rock" and "Pop" genre, with "Rock" genre written as "1" and "Pop" genre written as "0". 
+- Note: To minimize computing duration, we will use a sample of 10,000 rows from the overall dataset. 
+
+``` {r echo=FALSE, message=FALSE}
+#### Loading the library
+library(caTools)
+```
+
+#### Creating data frame as an input for logistic regression*
+``` {r echo=FALSE, message=FALSE}
+target <- c("Pop","Rock")
+
+data_lr <- data_all %>% filter(genre %in% target) %>% 
+  mutate(n_char = nchar(words, type = "chars")) %>%
+  mutate(genre_lr = ifelse(genre == "Rock",1,0)) %>% # Data transformation into binary for logistic regression (Rock = 1, Pop = 0)
+  unnest_tokens(word,words) %>%
+  select(id, word, genre_lr, n_char) %>%
+  group_by(id) %>%
+  add_count(word, sort = TRUE) %>% 
+  distinct() %>% 
+  top_n(n = 1, wt = n) %>%
+  select(id, genre_lr, n_char, word) %>%
+  inner_join(get_sentiments("nrc"))
+  
+data_lr <- data_lr[!duplicated(data_lr$id), ] # if there are same ids in which there are two word with highest n, we will only keep one word
+head(data_lr)
+```
+
+We then continued to split the data into train and test dataset, with a split ratio of 70% and 30%. Therefore, train dataset will have a number of rows of 7,000 and test dataset will have 3,000.
+
+#### Sampling data and splitting data into test and train
+``` {r}
+library(caTools)
+set.seed(123)
+data_lr <- data_lr[sample(nrow(data_lr), 10000), ]
+split = sample.split(data_lr$genre_lr,SplitRatio = 0.7)
+train = data_lr[split,]
+test = data_lr[!split,]
+```
+
+We then checked the result of our split to check if the number of rows is correct. 
+
+#### Explore
+``` {r echo=FALSE, message=FALSE}
+nrow(train)
+nrow(test)
+
+mean(train$genre_lr)
+mean(test$genre_lr)
+```
+
+We then created a model using number of words and sentiment as the predictors and predict the model to the test set. 
+
+#### Constructing the model
+```{r message=FALSE}
+model3 = glm(genre_lr~n_char+sentiment,
+             data=train,
+             family='binomial')
+
+summary(model3)
+```
+
+#### Predict on test
+``` {r message=FALSE}
+sum(test$genre_lr==0)/nrow(test)
+```
+
+#### Accuracy, Specificity, Sensitivity
+``` {r echo=FALSE, message=FALSE}
+pred = predict(model3,newdata=test,type='response')
+ct = table(genre_lr = test$genre_lr,
+           predictions = as.integer(pred>0.5)); ct
+```
+
+*Accuracy*
+``` {r echo=FALSE, message=FALSE}
+accuracy = sum(ct[1,1],ct[2,2])/nrow(test); accuracy
+```
+
+*Specificity*
+``` {r echo=FALSE, message=FALSE}
+specificity = ct[1,1]/sum(ct[1,1],ct[1,2]); specificity
+```
+
+*Sensitivity*
+``` {r echo=FALSE, message=FALSE}
+sensitivity = ct[2,2]/sum(ct[2,1],ct[2,2]); sensitivity
+```
+
+The overall accuracy is dragged down by the low value of specificity, that is 0.016, as opposed to the high value of sensitivity, that is 0.998. This can be interpreted that almost all observations are predicted as "Rock" genre, while the true proportions are actually 70% songs included in the dataset are rock songs and the rest are pop songs. 
+
+The poor predictability of the model can be improved by the following action steps:
+- Adding more data points for pop songs, because in the source dataset, rock songs accounted for 51.6% of total songs, while pop songs only accounted for 14.9%. 
+- Refining the current predictors or adding more predictor variables, such as sentiment scores by afinn lexicon, vocabulary size, etc.  
+
+# Summary
+
+- Both genres have similar word-by-word choices such as “love”, “time”, “day”, “night”, “life”, “baby”, and “heart”. Their average number of words per song are also similar, as demonstrated by their distributions. However, rock songs have more songs with significantly large number of words. (3,000-4,000 words per song) compared to pop songs.
+
+- The lyrics of rock songs tend to be more of negative sentiments such as “fear”, “anger”, and “sadness”, as opposed to those of pop songs are slightly more likely to be positive than negative.
+
+- Our model is yet to be improved in accuracy, because most of the observations are predicted as rock songs. The model can be improved by adding more data points for pop songs and refining/adding predictors. 
