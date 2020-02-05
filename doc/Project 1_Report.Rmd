@@ -121,7 +121,7 @@ boxplot <- ggplot(data_boxplot, aes(genre, y=n_words)) +
 boxplot
 ```
 
-Both genres have similar values in terms of median, quartiles, and ranges of average number of words per songs, which indicate their distributions of average number of words per song are similar. However, rock songs have more extreme values compared to pop songs, as demonstrated by the dots in 3,000-4,000 average no. of words region. 
+Both genres have similar values in terms of median, quartiles, and ranges of average number of words per songs, which indicate their distributions of average number of words per song are similar. However, rock songs have more extreme values compared to pop songs, as demonstrated by the dots in 500-600 average no. of words region. 
 
 ## Topic 2: Sentiments
 ### Do we have a different type of sentiment between rock and pop? 
@@ -267,7 +267,7 @@ The poor predictability of the model can be improved by the following action ste
 
 # Summary
 
-- Both genres have similar word-by-word choices such as “love”, “time”, “day”, “night”, “life”, “baby”, and “heart”. Their average number of words per song are also similar, as demonstrated by their distributions. However, rock songs have more songs with significantly large number of words. (3,000-4,000 words per song) compared to pop songs.
+- Both genres have similar word-by-word choices such as “love”, “time”, “day”, “night”, “life”, “baby”, and “heart”. Their average number of words per song are also similar, as demonstrated by their distributions. However, rock songs have more songs with significantly large number of words. (500-600 words per song) compared to pop songs.
 
 - The lyrics of rock songs tend to be more of negative sentiments such as “fear”, “anger”, and “sadness”, as opposed to those of pop songs are slightly more likely to be positive than negative.
 
