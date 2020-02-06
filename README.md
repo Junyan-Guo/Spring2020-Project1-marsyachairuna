@@ -2,7 +2,7 @@
 ## Spring 2020
 ## Project 1: Text Analytics on Song Lyrics (Rock vs. Pop)
 
-![](/Users/marsyachairuna/Documents/2019 Spring Applied Analytics/Applied Data Science/Spring2020-Project1-marsyachairuna/figs/PopvsRock.png)
+![image](figs/PopvsRock.png)
 
 ### [Project Description](doc/)
 Term: Spring 2020
@@ -11,9 +11,9 @@ Term: Spring 2020
 + This project is conducted by Marsya Chairuna (mc4813)
 + Project summary: Rock and Pop fans have stirred up debates across internet forums and websites. Setting aside the chords, how do they actually differ in terms of lyrics and sentiments?
 
-1. *Words and Sentences:* What are the most frequent word(s) used in lyrics for each rock and pop genre? How the length of characters differs?
-2. *Sentiment:* Do we have a different type of sentiment/emotion between rock and pop?
-3. *Predictability:* Can we predict the whether a song's genre is rock or pop? 
+1. **Words and Sentences:** What are the most frequent word(s) used in lyrics for each rock and pop genre? How the length of characters differs?
+2. **Sentiment:** Do we have a different type of sentiment/emotion between rock and pop?
+3. **Predictability:** Can we predict the whether a song's genre is rock or pop? 
 
 To answer the questions, this project used several techniques of text mining and sentiment analysis of song lyrics of both rock and pop genre. 
 
